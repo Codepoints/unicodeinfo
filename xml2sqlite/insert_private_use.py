@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+"""Insert the codepoints of the private use area into ucd.sqlite"""
+
 import sqlite3
 
 conn = sqlite3.connect('ucd.sqlite')

@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+"""Read a large SQL file and apply it statement by statement
+
+This seems faster than with the CLI sqlite3 client. Apart from that,
+we can simply output a counter to tell us the advance."""
+
 import sqlite3
 
 conn = sqlite3.connect('ucd.sqlite')
