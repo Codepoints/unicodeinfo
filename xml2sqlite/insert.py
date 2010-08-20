@@ -17,7 +17,8 @@ i = 0
 for insert in inserts:
     cur.execute(insert+';')
     i += 1
-    print i
+    if i % 1000 == 0:
+        print i
 
 cur.close()
 conn.close()
