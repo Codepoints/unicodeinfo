@@ -63,17 +63,18 @@ def start_element(element, attrs):
                 else:
                     values.append(u"NULL")
             elif f in cppfields:
-                values.append(u'"%s"' % v.replace('#', unicode(attrs['cp'])))
+                values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
             elif f in intfields:
                 values.append(unicode(int(v)))
             else:
-                values.append(u'"%s"' % v)
+                values.append(u"'%s'" % v.replace("'", "''"))
         sqlfile.write(template % {
             'fields': u','.join(fields),
             'values': u','.join(values),
         })
         # give us a hint, where we are at the moment
-        print cp
+        if cp % 1000 == 0:
+            print cp
 
 # parse the file with expat
 p = expat.ParserCreate()
