@@ -1,2 +1,3 @@
 .*.swp
 xml2sqlite/ucd.all.flat.xml
+/xml2sqlite/ucd.sqlite
