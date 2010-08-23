@@ -2,11 +2,21 @@
 
 DB = xml2sqlite/ucd.sqlite
 
-.PHONY: clean dist-clean
+.PHONY: clean dist-clean sql db all
 
 all: db
 
 db: $(DB)
+
+sql: xml2sqlite/unicodeinfo.full.sql
+
+xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml
+	cat xml2sqlite/create.sql > xml2sqlite/unicodeinfo.full.sql
+	(cd xml2sqlite; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
+	rm -f xml2sqlite/unicodeinfo.sql
+	cat xml2sqlite/digraphs.sql >> xml2sqlite/unicodeinfo.full.sql
+	cat xml2sqlite/htmlentity.sql >> xml2sqlite/unicodeinfo.full.sql
+	cat xml2sqlite/blocks.sql >> xml2sqlite/unicodeinfo.full.sql
 
 $(DB): xml2sqlite/ucd.all.flat.xml
 	cat xml2sqlite/create.sql | sqlite3 "$(DB)"
@@ -26,5 +36,5 @@ dist-clean: clean
 	-rm -f xml2sqlite/ucd.all.flat.*
 
 clean:
-	-rm -f xml2sqlite/unicodeinfo.sql
+	-rm -f xml2sqlite/unicodeinfo*.sql
 
