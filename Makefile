@@ -11,31 +11,39 @@ db: $(DB)
 
 sql: xml2sqlite/unicodeinfo.full.sql
 
-xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql
+xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql
 	cat xml2sqlite/create.sql > xml2sqlite/unicodeinfo.full.sql
 	(cd xml2sqlite; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
 	rm -f xml2sqlite/unicodeinfo.sql
 	cat xml2sqlite/digraphs.sql >> xml2sqlite/unicodeinfo.full.sql
 	cat xml2sqlite/htmlentity.sql >> xml2sqlite/unicodeinfo.full.sql
 	cat xml2sqlite/blocks.sql >> xml2sqlite/unicodeinfo.full.sql
+	cat xml2sqlite/scripts.sql >> xml2sqlite/unicodeinfo.full.sql
 
-$(DB): xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql
+$(DB): xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql
+	-rm -f "$(DB)"
 	cat xml2sqlite/create.sql | sqlite3 "$(DB)"
 	(cd xml2sqlite; python db.py; python insert.py)
 	rm -f xml2sqlite/unicodeinfo.sql
 	cat xml2sqlite/digraphs.sql | sqlite3 "$(DB)"
 	cat xml2sqlite/htmlentity.sql | sqlite3 "$(DB)"
 	cat xml2sqlite/blocks.sql | sqlite3 "$(DB)"
+	cat xml2sqlite/scripts.sql | sqlite3 "$(DB)"
 
 xml2sqlite/blocks.sql: UNIDATA/Blocks.txt xml2sqlite/blocks.py
 	cd xml2sqlite; python blocks.py
+
+xml2sqlite/scripts.sql: UNIDATA/Scripts.txt UNIDATA/PropertyValueAliases.txt xml2sqlite/scripts.py
+	cd xml2sqlite; python scripts.py
 
 xml2sqlite/ucd.all.flat.xml:
 	wget -O xml2sqlite/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
 	cd xml2sqlite; unzip ucd.all.flat.zip
 	rm -f xml2sqlite/ucd.all.flat.zip
 
-UNIDATA/Blocks.txt: UNIDATA
+#UNIDATA/Blocks.txt: UNIDATA
+#UNIDATA/Scripts.txt: UNIDATA
+#UNIDATA/PropertyValueAliases.txt: UNIDATA
 
 UNIDATA:
 	mkdir UNIDATA
@@ -51,4 +59,5 @@ clean:
 	-rm -f -r UNIDATA
 	-rm -f xml2sqlite/unicodeinfo*.sql
 	-rm -f xml2sqlite/blocks.sql
+	-rm -f xml2sqlite/scripts.sql
 
