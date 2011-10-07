@@ -1,5 +1,6 @@
 
 
+UNICODE_VERSION = 6.0.0
 DB = xml2sqlite/ucd.sqlite
 
 .PHONY: clean dist-clean sql db all
@@ -27,14 +28,21 @@ $(DB): xml2sqlite/ucd.all.flat.xml
 	cat xml2sqlite/blocks.sql | sqlite3 "$(DB)"
 
 xml2sqlite/ucd.all.flat.xml:
-	wget -O xml2sqlite/ucd.all.flat.zip http://www.unicode.org/Public/5.2.0/ucdxml/ucd.all.flat.zip
-	(cd xml2sqlite; unzip ucd.all.flat.zip)
+	wget -O xml2sqlite/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
+	cd xml2sqlite; unzip ucd.all.flat.zip
 	rm -f xml2sqlite/ucd.all.flat.zip
 
+UNIDATA:
+	mkdir UNIDATA
+	wget -O UNIDATA/UCD.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UCD.zip
+	cd UNIDATA; unzip -o UCD.zip
+	rm -f UNIDATA/UCD.zip
+
 dist-clean: clean
-	-rm -f "$(DB)"
-	-rm -f xml2sqlite/ucd.all.flat.*
+	-rm "$(DB)"
+	-rm xml2sqlite/ucd.all.flat.*
 
 clean:
-	-rm -f xml2sqlite/unicodeinfo*.sql
+	-rm -r UNIDATA
+	-rm xml2sqlite/unicodeinfo*.sql
 
