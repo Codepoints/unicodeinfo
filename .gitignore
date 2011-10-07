@@ -3,3 +3,4 @@
 /xml2sqlite/ucd.sqlite
 /xml2sqlite/unicodeinfo.full.sql
 /UNIDATA
+/xml2sqlite/blocks.sql

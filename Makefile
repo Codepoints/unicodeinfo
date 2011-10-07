@@ -35,7 +35,7 @@ xml2sqlite/ucd.all.flat.xml:
 	cd xml2sqlite; unzip ucd.all.flat.zip
 	rm -f xml2sqlite/ucd.all.flat.zip
 
-UNIDATA/*: UNIDATA
+UNIDATA/Blocks.txt: UNIDATA
 
 UNIDATA:
 	mkdir UNIDATA
@@ -44,10 +44,11 @@ UNIDATA:
 	rm -f UNIDATA/UCD.zip
 
 dist-clean: clean
-	-rm "$(DB)"
-	-rm xml2sqlite/ucd.all.flat.*
+	-rm -f "$(DB)"
+	-rm -f xml2sqlite/ucd.all.flat.*
 
 clean:
-	-rm -r UNIDATA
-	-rm xml2sqlite/unicodeinfo*.sql
+	-rm -f -r UNIDATA
+	-rm -f xml2sqlite/unicodeinfo*.sql
+	-rm -f xml2sqlite/blocks.sql
 
