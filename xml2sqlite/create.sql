@@ -54,6 +54,8 @@ sc       TEXT(4),
 isc      TEXT(2047),
 hst      TEXT(3),
 JSN      TEXT(3),
+InSC     TEXT(24),    -- new in U6
+InMC     TEXT(24),    -- new in U6
 IDS      INTEGER(1),  -- bool
 OIDS     INTEGER(1),  -- bool
 XIDS     INTEGER(1),  -- bool
