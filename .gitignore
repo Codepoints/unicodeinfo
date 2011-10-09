@@ -1,7 +1,7 @@
 .*.swp
-/xml2sqlite/ucd.all.flat.xml
-/xml2sqlite/ucd.sqlite
-/xml2sqlite/unicodeinfo.full.sql
+/db/ucd.all.flat.xml
+/db/ucd.sqlite
+/db/unicodeinfo.full.sql
 /UNIDATA
-/xml2sqlite/blocks.sql
-/xml2sqlite/scripts.sql
+/db/blocks.sql
+/db/scripts.sql

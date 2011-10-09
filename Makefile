@@ -1,7 +1,7 @@
 
 
 UNICODE_VERSION = 6.0.0
-DB = xml2sqlite/ucd.sqlite
+DB = db/ucd.sqlite
 
 .PHONY: clean dist-clean sql db all
 
@@ -9,35 +9,35 @@ all: db
 
 db: $(DB)
 
-sql: xml2sqlite/unicodeinfo.full.sql
+sql: db/unicodeinfo.full.sql
 
-xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql xml2sqlite/alias.sql
-	cat xml2sqlite/create.sql > xml2sqlite/unicodeinfo.full.sql
-	(cd xml2sqlite; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
-	rm -f xml2sqlite/unicodeinfo.sql
-	cat xml2sqlite/alias.sql >> xml2sqlite/unicodeinfo.full.sql
-	cat xml2sqlite/blocks.sql >> xml2sqlite/unicodeinfo.full.sql
-	cat xml2sqlite/scripts.sql >> xml2sqlite/unicodeinfo.full.sql
+db/unicodeinfo.full.sql: db/ucd.all.flat.xml db/blocks.sql db/scripts.sql db/alias.sql
+	cat db/create.sql > db/unicodeinfo.full.sql
+	(cd db; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
+	rm -f db/unicodeinfo.sql
+	cat db/alias.sql >> db/unicodeinfo.full.sql
+	cat db/blocks.sql >> db/unicodeinfo.full.sql
+	cat db/scripts.sql >> db/unicodeinfo.full.sql
 
-$(DB): xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql xml2sqlite/alias.sql
+$(DB): db/ucd.all.flat.xml db/blocks.sql db/scripts.sql db/alias.sql
 	-rm -f "$(DB)"
-	cat xml2sqlite/create.sql | sqlite3 "$(DB)"
-	(cd xml2sqlite; python db.py; python insert.py)
-	rm -f xml2sqlite/unicodeinfo.sql
-	cat xml2sqlite/alias.sql | sqlite3 "$(DB)"
-	cat xml2sqlite/blocks.sql | sqlite3 "$(DB)"
-	cat xml2sqlite/scripts.sql | sqlite3 "$(DB)"
+	cat db/create.sql | sqlite3 "$(DB)"
+	(cd db; python db.py; python insert.py)
+	rm -f db/unicodeinfo.sql
+	cat db/alias.sql | sqlite3 "$(DB)"
+	cat db/blocks.sql | sqlite3 "$(DB)"
+	cat db/scripts.sql | sqlite3 "$(DB)"
 
-xml2sqlite/blocks.sql: UNIDATA/Blocks.txt xml2sqlite/blocks.py
-	cd xml2sqlite; python blocks.py
+db/blocks.sql: UNIDATA/Blocks.txt db/blocks.py
+	cd db; python blocks.py
 
-xml2sqlite/scripts.sql: UNIDATA/Scripts.txt UNIDATA/PropertyValueAliases.txt xml2sqlite/scripts.py
-	cd xml2sqlite; python scripts.py
+db/scripts.sql: UNIDATA/Scripts.txt UNIDATA/PropertyValueAliases.txt db/scripts.py
+	cd db; python scripts.py
 
-xml2sqlite/ucd.all.flat.xml:
-	wget -O xml2sqlite/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
-	cd xml2sqlite; unzip ucd.all.flat.zip
-	rm -f xml2sqlite/ucd.all.flat.zip
+db/ucd.all.flat.xml:
+	wget -O db/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
+	cd db; unzip ucd.all.flat.zip
+	rm -f db/ucd.all.flat.zip
 
 UNIDATA/Blocks.txt: UNIDATA/ReadMe.txt
 UNIDATA/Scripts.txt: UNIDATA/ReadMe.txt
@@ -51,29 +51,29 @@ UNIDATA/ReadMe.txt:
 
 dist-clean: clean
 	-rm -f "$(DB)"
-	-rm -f xml2sqlite/ucd.all.flat.*
+	-rm -f db/ucd.all.flat.*
 
 clean:
 	-rm -f -r UNIDATA
-	-rm -f xml2sqlite/unicodeinfo*.sql
-	-rm -f xml2sqlite/blocks.sql
-	-rm -f xml2sqlite/scripts.sql
-	-rm -f xml2sqlite/digraphs.sql
-	-rm -f xml2sqlite/htmlentities.sql
-	-rm -f xml2sqlite/alias.sql
+	-rm -f db/unicodeinfo*.sql
+	-rm -f db/blocks.sql
+	-rm -f db/scripts.sql
+	-rm -f db/digraphs.sql
+	-rm -f db/htmlentities.sql
+	-rm -f db/alias.sql
 
-xml2sqlite/digraphs.sql:
+db/digraphs.sql:
 	wget -q -O - http://www.rfc-editor.org/rfc/rfc1345.txt | \
 	sed -n '/^ [^ ]\{1,6\} \+[0-9A-Fa-f]\{4\}    [^ ].*$$/p' | \
-	sed 's/^ \([^ ]\{1,6\}\) \+\([0-9A-Fa-f]\{4\}\)    [^ ].*$$/\1\t\2/' > xml2sqlite/digraphs.tmp
-	perl -p -e 's/^([^\t]+)\t([0-9a-f]{4})$$/"INSERT INTO alias (cp, name, `type`) VALUES (".hex("$$2").", '"'"'".join("'"''"'", split("'"'"'", $$1))."'"'"', '"'digraph'"');"/e' xml2sqlite/digraphs.tmp > xml2sqlite/digraphs.sql
-	rm xml2sqlite/digraphs.tmp
+	sed 's/^ \([^ ]\{1,6\}\) \+\([0-9A-Fa-f]\{4\}\)    [^ ].*$$/\1\t\2/' > db/digraphs.tmp
+	perl -p -e 's/^([^\t]+)\t([0-9a-f]{4})$$/"INSERT INTO alias (cp, name, `type`) VALUES (".hex("$$2").", '"'"'".join("'"''"'", split("'"'"'", $$1))."'"'"', '"'digraph'"');"/e' db/digraphs.tmp > db/digraphs.sql
+	rm db/digraphs.tmp
 
-xml2sqlite/htmlentities.sql:
-	cd xml2sqlite; python htmlentities.py
+db/htmlentities.sql:
+	cd db; python htmlentities.py
 
-xml2sqlite/alias.sql: xml2sqlite/htmlentities.sql xml2sqlite/digraphs.sql
+db/alias.sql: db/htmlentities.sql db/digraphs.sql
 	true > $@
 	cat $^ > $@
-	cd xml2sqlite; python alias.py
+	cd db; python alias.py
 

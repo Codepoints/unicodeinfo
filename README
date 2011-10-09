@@ -6,11 +6,11 @@
  SQLITE DATABASE:
 ------------------
 
-The directory xml2sqlite contains tools to create an Sqlite3 database
+The directory db contains tools to create an Sqlite3 database
 from Unicode’s XML data. You need ucd.all.flat.xml from
     ftp://unicode.org/Public/5.2.0/ucdxml/ucd.all.flat.zip
-to live in xml2sqlite. Then run `make db` to create the database
-    xml2sqlite/ucd.sqlite .
+to live in db. Then run `make db` to create the database
+    db/ucd.sqlite .
 
 The database itself contains every field as defined in “Unicode
 Character Database in XML” <http://www.unicode.org/reports/tr42/>.
