@@ -194,9 +194,13 @@ kXHC1983              TEXT(255),
 kWubi                 TEXT(2047),
 kXerox                TEXT(7),
 kZVariant             TEXT(255),
--- additional (non-standard) info starts here:
-digraph               TEXT(7),
-htmlentity            TEXT(8)
 );
 CREATE INDEX name ON data ( na );
 CREATE INDEX digraph ON data ( digraph );
+
+CREATE TABLE alias (
+cp       INTEGER PRIMARY KEY,
+name     TEXT(255),
+`type`   TEXT(25)
+);
+CREATE INDEX name ON alias ( name );
