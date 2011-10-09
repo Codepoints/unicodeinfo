@@ -11,7 +11,7 @@ db: $(DB)
 
 sql: xml2sqlite/unicodeinfo.full.sql
 
-xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql
+xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql xml2sqlite/alias.sql
 	cat xml2sqlite/create.sql > xml2sqlite/unicodeinfo.full.sql
 	(cd xml2sqlite; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
 	rm -f xml2sqlite/unicodeinfo.sql
@@ -19,7 +19,7 @@ xml2sqlite/unicodeinfo.full.sql: xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.s
 	cat xml2sqlite/blocks.sql >> xml2sqlite/unicodeinfo.full.sql
 	cat xml2sqlite/scripts.sql >> xml2sqlite/unicodeinfo.full.sql
 
-$(DB): xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql
+$(DB): xml2sqlite/ucd.all.flat.xml xml2sqlite/blocks.sql xml2sqlite/scripts.sql xml2sqlite/alias.sql
 	-rm -f "$(DB)"
 	cat xml2sqlite/create.sql | sqlite3 "$(DB)"
 	(cd xml2sqlite; python db.py; python insert.py)
@@ -75,4 +75,5 @@ xml2sqlite/htmlentities.sql:
 xml2sqlite/alias.sql: xml2sqlite/htmlentities.sql xml2sqlite/digraphs.sql
 	true > $@
 	cat $^ > $@
+	cd xml2sqlite; python alias.py
 
