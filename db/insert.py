@@ -6,11 +6,18 @@ This seems faster than with the CLI sqlite3 client. Apart from that,
 we can simply output a counter to tell us the advance."""
 
 import sqlite3
+import sys
+
+sqlfile = 'unicodeinfo.sql'
+if len(sys.argv) > 1:
+    sqlfile = sys.argv[1]
+if not os.path.isfile(sqlfile):
+    raise IOError("File not found")
 
 conn = sqlite3.connect('ucd.sqlite')
 cur = conn.cursor()
 
-sql = open('unicodeinfo.sql', 'r').read()
+sqlfile = open(sqlfile, 'r').read()
 inserts = sql.split(";\n")
 i = 0
 
