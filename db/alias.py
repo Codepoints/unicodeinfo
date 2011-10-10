@@ -17,7 +17,7 @@ mapfile = open('../UNIDATA/NameAliases.txt', 'r')
 for line in mapfile.readlines():
     if ";" in line and line[0] != "#":
         (cp, name) = line.strip().split(";")
-        sqlfile.write(template % (int(cp, 16), name, 'unicode'))
+        sqlfile.write(template % (int(cp, 16), name.replace("'", "''"), 'unicode'))
 mapfile.close()
 
 def handle_buf(buffer, sqlfile, template):
@@ -25,7 +25,7 @@ def handle_buf(buffer, sqlfile, template):
     for line in buffer.split("\n"):
         if line.startswith("\t= "):
             for alias in line[3:].split(','):
-                sqlfile.write(template % (cp, alias.strip().decode("ISO-8859-1"), 'alias'))
+                sqlfile.write(template % (cp, alias.strip().decode("ISO-8859-1").replace("'", "''"), 'alias'))
     return None
 
 mapfile = open('../UNIDATA/NamesList.txt', 'r')

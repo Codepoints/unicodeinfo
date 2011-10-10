@@ -193,14 +193,14 @@ kVietnamese           TEXT(255),
 kXHC1983              TEXT(255),
 kWubi                 TEXT(2047),
 kXerox                TEXT(7),
-kZVariant             TEXT(255),
+kZVariant             TEXT(255)
 );
-CREATE INDEX name ON data ( na );
-CREATE INDEX digraph ON data ( digraph );
+CREATE INDEX data_name ON data ( na );
 
 CREATE TABLE alias (
-cp       INTEGER PRIMARY KEY,
+cp       INTEGER,
 name     TEXT(255),
 `type`   TEXT(25)
 );
-CREATE INDEX name ON alias ( name );
+CREATE INDEX alias_cp ON alias ( cp );
+CREATE INDEX alias_name ON alias ( name );
