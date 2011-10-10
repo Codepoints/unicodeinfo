@@ -5,9 +5,7 @@
 The result will be written into ./htmlentities.sql"""
 
 from htmlentitydefs import entitydefs
-import re
 import codecs
-import sys
 
 sqlfile = codecs.open('htmlentities.sql', 'w', 'utf-8')
 template = u"INSERT INTO alias (cp, name, `type`) VALUES (%s, '%s', 'html');\n"

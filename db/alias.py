@@ -5,9 +5,7 @@
 The script assumes the txt file to be ../UNIDATA/Scripts.txt. The
 result will be written into ./scripts.sql"""
 
-import re
 import codecs
-import sys
 import string
 
 sqlfile = codecs.open('alias.sql', 'a', 'utf-8')

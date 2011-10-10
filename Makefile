@@ -72,8 +72,8 @@ db/digraphs.sql:
 db/htmlentities.sql:
 	cd db; python htmlentities.py
 
-db/alias.sql: db/htmlentities.sql db/digraphs.sql
+db/alias.sql: db/htmlentities.sql db/digraphs.sql db/alias.py
 	true > $@
-	cat $^ > $@
+	cat db/htmlentities.sql db/digraphs.sql > $@
 	cd db; python alias.py
 

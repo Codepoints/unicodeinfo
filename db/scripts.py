@@ -5,9 +5,7 @@
 The script assumes the txt file to be ../UNIDATA/Scripts.txt. The
 result will be written into ./scripts.sql"""
 
-import re
 import codecs
-import sys
 
 mapfile = open('../UNIDATA/PropertyValueAliases.txt', 'r')
 sqlfile = codecs.open('scripts.sql', 'w', 'utf-8')
