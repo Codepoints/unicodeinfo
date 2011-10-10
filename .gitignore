@@ -4,7 +4,6 @@
 /db/unicodeinfo.full.sql
 /UNIDATA
 /db/blocks.sql
-/db/scripts.sql
 /db/propval.sql
 /db/alias.sql
 /db/digraphs.sql

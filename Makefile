@@ -11,30 +11,22 @@ db: $(DB)
 
 sql: db/unicodeinfo.full.sql
 
-db/unicodeinfo.full.sql: db/ucd.all.flat.xml db/blocks.sql db/scripts.sql db/alias.sql db/propval.sql
+db/unicodeinfo.full.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	cat db/create.sql > db/unicodeinfo.full.sql
 	(cd db; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
 	rm -f db/unicodeinfo.sql
 	cat db/alias.sql >> db/unicodeinfo.full.sql
 	cat db/blocks.sql >> db/unicodeinfo.full.sql
-	cat db/scripts.sql >> db/unicodeinfo.full.sql
 	cat db/propval.sql >> db/unicodeinfo.full.sql
 
-$(DB): db/ucd.all.flat.xml db/blocks.sql db/scripts.sql db/alias.sql db/propval.sql
+$(DB): db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	-rm -f "$(DB)"
 	cat db/create.sql | sqlite3 "$(DB)"
 	(cd db; python db.py; python insert.py)
 	rm -f db/unicodeinfo.sql
 	cat db/alias.sql | sqlite3 "$(DB)"
 	cat db/blocks.sql | sqlite3 "$(DB)"
-	cat db/scripts.sql | sqlite3 "$(DB)"
 	cat db/propval.sql | sqlite3 "$(DB)"
-
-db/blocks.sql: UNIDATA/Blocks.txt db/blocks.py
-	cd db; python blocks.py
-
-db/scripts.sql: UNIDATA/Scripts.txt UNIDATA/PropertyValueAliases.txt db/scripts.py
-	cd db; python scripts.py
 
 db/ucd.all.flat.xml:
 	wget -O db/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
@@ -59,11 +51,13 @@ clean:
 	-rm -f -r UNIDATA
 	-rm -f db/unicodeinfo*.sql
 	-rm -f db/blocks.sql
-	-rm -f db/scripts.sql
 	-rm -f db/digraphs.sql
 	-rm -f db/htmlentities.sql
 	-rm -f db/alias.sql
 	-rm -f db/propval.sql
+
+db/blocks.sql: UNIDATA/Blocks.txt db/blocks.py
+	cd db; python blocks.py
 
 db/digraphs.sql:
 	wget -q -O - http://www.rfc-editor.org/rfc/rfc1345.txt | \
