@@ -12,9 +12,9 @@ sqlfile = codecs.open('scripts.sql', 'w', 'utf-8')
 template = u"INSERT INTO scripts (iso, name) VALUES ('%s', '%s');\n"
 
 sqlfile.write("""\
-CREATE TABLE scripts
+CREATE TABLE scripts (
   iso  TEXT(4) Default 'Zzzz' PRIMARY KEY,
-  name TEXT(24) DEFAULT 'Unknown',
+  name TEXT(24) DEFAULT 'Unknown'
 );
 
 """)
