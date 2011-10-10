@@ -24,7 +24,8 @@ $(DB): db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	cat db/create.sql | sqlite3 "$(DB)"
 	(cd db; python db.py; python insert.py)
 	rm -f db/unicodeinfo.sql
-	cat db/alias.sql | sqlite3 "$(DB)"
+	(cd db; python insert.py alias.sql)
+	#cat db/alias.sql | sqlite3 "$(DB)"
 	cat db/blocks.sql | sqlite3 "$(DB)"
 	cat db/propval.sql | sqlite3 "$(DB)"
 
@@ -38,33 +39,37 @@ UNIDATA/Scripts.txt: UNIDATA/ReadMe.txt
 UNIDATA/PropertyValueAliases.txt: UNIDATA/ReadMe.txt
 
 UNIDATA/ReadMe.txt:
-	mkdir UNIDATA
+	test ! -d UNIDATA && mkdir UNIDATA
 	wget -O UNIDATA/UCD.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UCD.zip
 	cd UNIDATA; unzip -o UCD.zip
 	rm -f UNIDATA/UCD.zip
 
 dist-clean: clean
+	-rm -f -r UNIDATA
 	-rm -f "$(DB)"
 	-rm -f db/ucd.all.flat.*
 
 clean:
-	-rm -f -r UNIDATA
 	-rm -f db/unicodeinfo*.sql
 	-rm -f db/blocks.sql
-	-rm -f db/digraphs.sql
 	-rm -f db/htmlentities.sql
 	-rm -f db/alias.sql
 	-rm -f db/propval.sql
+	-rm -f db/digraphs.sql
 
 db/blocks.sql: UNIDATA/Blocks.txt db/blocks.py
 	cd db; python blocks.py
 
-db/digraphs.sql:
-	wget -q -O - http://www.rfc-editor.org/rfc/rfc1345.txt | \
+db/digraphs.sql: UNIDATA/rfc1345.txt
+	cat UNIDATA/rfc1345.txt | \
 	sed -n '/^ [^ ]\{1,6\} \+[0-9A-Fa-f]\{4\}    [^ ].*$$/p' | \
 	sed 's/^ \([^ ]\{1,6\}\) \+\([0-9A-Fa-f]\{4\}\)    [^ ].*$$/\1\t\2/' > db/digraphs.tmp
 	perl -p -e 's/^([^\t]+)\t([0-9a-f]{4})$$/"INSERT INTO alias (cp, name, `type`) VALUES (".hex("$$2").", '"'"'".join("'"''"'", split("'"'"'", $$1))."'"'"', '"'digraph'"');"/e' db/digraphs.tmp > db/digraphs.sql
 	rm db/digraphs.tmp
+
+UNIDATA/rfc1345.txt:
+	test ! -d UNIDATA && mkdir UNIDATA
+	wget -q -O "$@" http://www.rfc-editor.org/rfc/rfc1345.txt
 
 db/htmlentities.sql:
 	cd db; python htmlentities.py
