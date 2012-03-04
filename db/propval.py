@@ -10,15 +10,6 @@ import codecs
 sqlfile = codecs.open('propval.sql', 'w', 'utf-8')
 template = u"INSERT INTO propval (prop, abbr, name) VALUES ('%s', '%s', '%s');\n"
 
-sqlfile.write("""\
-CREATE TABLE propval (
-  prop TEXT(12),
-  abbr TEXT(255),
-  name TEXT(255)
-);
-
-""")
-
 mapfile = open('../UNIDATA/PropertyValueAliases.txt', 'r')
 for line in mapfile.readlines():
     if len(line) > 1 and not line.startswith('#'):

@@ -1,5 +1,5 @@
 CREATE TABLE data (
-cp       INTEGER PRIMARY KEY,
+cp       INTEGER PRIMARY KEY NOT NULL,
 age      TEXT(12),
 na       TEXT(255),
 na1      TEXT(255),
@@ -194,15 +194,43 @@ kXHC1983              TEXT(255),
 kWubi                 TEXT(2047),
 kXerox                TEXT(7),
 kZVariant             TEXT(255),
-blk                   TEXT(255),
-scx                   TEXT(255)
+blk                   TEXT(255), -- new in U6.1
+scx                   TEXT(255)  -- new in U6.1
 );
 CREATE INDEX data_name ON data ( na );
 
 CREATE TABLE alias (
-cp       INTEGER,
-name     TEXT(255),
-`type`   TEXT(25)
+  cp     INTEGER,
+  name   TEXT(255),
+  `type` TEXT(25)
 );
 CREATE INDEX alias_cp ON alias ( cp );
 CREATE INDEX alias_name ON alias ( name );
+
+CREATE TABLE blocks (
+  name   TEXT(255) PRIMARY KEY,
+  first  INTEGER(7),
+  last   INTEGER(7)
+);
+CREATE INDEX cps ON blocks ( first, last );
+
+CREATE TABLE planes (
+  name   TEXT(255) PRIMARY KEY,
+  first  INTEGER(7),
+  last   INTEGER(7)
+);
+CREATE INDEX cps ON planes ( first, last );
+INSERT INTO planes (name, first, last) VALUES ('Basic Multilingual Plane', 0, 65535);
+INSERT INTO planes (name, first, last) VALUES ('Supplementary Multilingual Plane', 65536, 131071);
+INSERT INTO planes (name, first, last) VALUES ('Supplementary Ideographic Plane', 131072, 196607);
+INSERT INTO planes (name, first, last) VALUES ('Tertiary Ideographic Plane', 196608, 262143);
+INSERT INTO planes (name, first, last) VALUES ('Supplementary Special-purpose Plane', 917504, 983039);
+INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - A', 983040, 1048575);
+INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - B', 1048576, 1114111);
+
+CREATE TABLE propval (
+  prop TEXT(12),
+  abbr TEXT(255),
+  name TEXT(255)
+);
+
