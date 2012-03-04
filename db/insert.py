@@ -5,6 +5,7 @@
 This seems faster than with the CLI sqlite3 client. Apart from that,
 we can simply output a counter to tell us the advance."""
 
+import os
 import sqlite3
 import sys
 
