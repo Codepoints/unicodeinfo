@@ -193,7 +193,9 @@ kVietnamese           TEXT(255),
 kXHC1983              TEXT(255),
 kWubi                 TEXT(2047),
 kXerox                TEXT(7),
-kZVariant             TEXT(255)
+kZVariant             TEXT(255),
+blk                   TEXT(255),
+scx                   TEXT(255)
 );
 CREATE INDEX data_name ON data ( na );
 

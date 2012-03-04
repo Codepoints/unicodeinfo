@@ -18,7 +18,7 @@ if not os.path.isfile(sqlfile):
 conn = sqlite3.connect('ucd.sqlite')
 cur = conn.cursor()
 
-sqlfile = open(sqlfile, 'r').read()
+sql = open(sqlfile, 'r').read()
 inserts = sql.split(";\n")
 i = 0
 
