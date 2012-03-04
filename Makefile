@@ -68,7 +68,7 @@ db/digraphs.sql: UNIDATA/rfc1345.txt
 	rm db/digraphs.tmp
 
 UNIDATA/rfc1345.txt:
-	test ! -d UNIDATA && mkdir UNIDATA
+	test -d UNIDATA || mkdir UNIDATA
 	wget -q -O "$@" http://www.rfc-editor.org/rfc/rfc1345.txt
 
 db/htmlentities.sql:
