@@ -14,8 +14,9 @@ template = u"INSERT INTO alias (cp, name, `type`) VALUES (%s, '%s', '%s');\n"
 mapfile = open('../UNIDATA/NameAliases.txt', 'r')
 for line in mapfile.readlines():
     if ";" in line and line[0] != "#":
-        (cp, name) = line.strip().split(";")
-        sqlfile.write(template % (int(cp, 16), name.replace("'", "''"), 'unicode'))
+        (cp, name, typ) = line.strip().split(";")
+        sqlfile.write(template % (int(cp, 16), name.replace("'", "''"),
+                                  typ))
 mapfile.close()
 
 def handle_buf(buffer, sqlfile, template):

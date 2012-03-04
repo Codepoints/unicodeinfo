@@ -1,6 +1,6 @@
 
 
-UNICODE_VERSION = 6.0.0
+UNICODE_VERSION = 6.1.0
 DB = db/ucd.sqlite
 
 .PHONY: clean dist-clean sql db all
