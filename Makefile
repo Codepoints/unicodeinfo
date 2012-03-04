@@ -22,9 +22,10 @@ db/unicodeinfo.full.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propv
 $(DB): db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	-rm -f "$(DB)"
 	cat db/create.sql | sqlite3 "$(DB)"
-	(cd db; python db.py; python insert.py)
+	(cd db; python db.py
+	python db/insert.py db/unicodeinfo.sql "$(DB)"
 	rm -f db/unicodeinfo.sql
-	(cd db; python insert.py alias.sql)
+	python insert.py alias.sql "$(DB)"
 	#cat db/alias.sql | sqlite3 "$(DB)"
 	cat db/blocks.sql | sqlite3 "$(DB)"
 	cat db/propval.sql | sqlite3 "$(DB)"
@@ -39,7 +40,7 @@ UNIDATA/Scripts.txt: UNIDATA/ReadMe.txt
 UNIDATA/PropertyValueAliases.txt: UNIDATA/ReadMe.txt
 
 UNIDATA/ReadMe.txt:
-	test ! -d UNIDATA && mkdir UNIDATA
+	test -d UNIDATA || mkdir UNIDATA
 	wget -O UNIDATA/UCD.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UCD.zip
 	cd UNIDATA; unzip -o UCD.zip
 	rm -f UNIDATA/UCD.zip

@@ -9,25 +9,25 @@ import os
 import sqlite3
 import sys
 
-sqlfile = 'unicodeinfo.sql'
-if len(sys.argv) > 1:
-    sqlfile = sys.argv[1]
+if len(sys.argv) != 3:
+    raise ValueError("Need exactly two args")
+sqlfile = sys.argv[1]
+db = sys.argv[2]
 if not os.path.isfile(sqlfile):
-    raise IOError("File not found")
+    raise IOError("SQL file not found")
+if not os.path.isfile(db):
+    raise IOError("Database not found")
 
-conn = sqlite3.connect('ucd.sqlite')
+conn = sqlite3.connect(db)
 cur = conn.cursor()
 
 sql = open(sqlfile, 'r').read()
 inserts = sql.split(";\n")
-i = 0
 
-for insert in inserts:
+for i, insert in enumerate(inserts):
     cur.execute(insert+';')
-    i += 1
-    if i % 1000 == 0:
+    if i > 0 and i % 1000 == 0:
         print i
 
 cur.close()
 conn.close()
-
