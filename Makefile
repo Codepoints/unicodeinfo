@@ -11,7 +11,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: UNIDATA/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
+db/unicodeinfo.sql: UNIDATA/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql

@@ -74,7 +74,7 @@ def start_element(element, attrs):
                 v = v.replace('#', ucp).split()
                 if len(v) > 1:
                     for i, vv in enumerate(v):
-                        add += cpp_template % (cp, int(vv, 16), f, i)
+                        add += cpp_template % (cp, int(vv, 16), f, i+1)
                 elif len(v) == 1:
                     add += cp_template % (cp, int(v[0], 16), f)
             #elif f in cppfields:
