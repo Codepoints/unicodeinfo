@@ -24,10 +24,14 @@ cur = conn.cursor()
 sql = open(sqlfile, 'r').read()
 inserts = sql.split(";\n")
 
+sys.stdout.write(10*' ')
+sys.stdout.flush()
 for i, insert in enumerate(inserts):
     cur.execute(insert+';')
     if i > 0 and i % 1000 == 0:
-        print i
+        sys.stdout.write(10*'\b' + '%10s' % i)
+        sys.stdout.flush()
+sys.stdout.write('\n')
 
 cur.close()
 conn.close()
