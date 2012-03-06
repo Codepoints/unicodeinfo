@@ -9,7 +9,7 @@ all: db
 
 db: $(DB)
 
-sql: db/unicodeinfo.full.sql
+sql: db/unicodeinfo.sql
 
 db/unicodeinfo.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	cat db/create.sql > db/unicodeinfo.sql
