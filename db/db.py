@@ -2,13 +2,13 @@
 
 """Create an SQL file from a Unicode XML database
 
-The script assumes the XML file to be ./ucd.all.flat.xml. The
+The script assumes the XML file to be ../UNIDATA/ucd.all.flat.xml. The
 result will be written into ./unicodeinfo.tmp.sql."""
 
 from xml.parsers import expat
 import codecs
 
-xmlfile = open('ucd.all.flat.xml', 'r')
+xmlfile = open('../UNIDATA/ucd.all.flat.xml', 'r')
 sqlfile = codecs.open('unicodeinfo.tmp.sql', 'w', 'utf-8')
 template = u"INSERT INTO codepoints (%(fields)s) VALUES (%(values)s);\n"
 cp_template = u"INSERT INTO codepoint_relation (cp, other, relation) VALUES (%s, %s, '%s');\n"

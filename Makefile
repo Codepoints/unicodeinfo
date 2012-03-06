@@ -11,7 +11,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
+db/unicodeinfo.sql: UNIDATA/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
@@ -24,10 +24,11 @@ $(DB): db/unicodeinfo.sql
 	true > "$(DB)"
 	python db/insert.py db/unicodeinfo.sql "$(DB)"
 
-db/ucd.all.flat.xml:
-	wget -O db/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
-	cd db; unzip ucd.all.flat.zip
-	rm -f db/ucd.all.flat.zip
+UNIDATA/ucd.all.flat.xml:
+	test -d UNIDATA || mkdir UNIDATA
+	wget -O UNIDATA/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
+	cd UNIDATA; unzip ucd.all.flat.zip
+	rm -f UNIDATA/ucd.all.flat.zip
 
 UNIDATA/Blocks.txt: UNIDATA/ReadMe.txt
 UNIDATA/Scripts.txt: UNIDATA/ReadMe.txt
@@ -42,7 +43,7 @@ UNIDATA/ReadMe.txt:
 dist-clean: clean
 	-rm -f -r UNIDATA
 	-rm -f "$(DB)"
-	-rm -f db/ucd.all.flat.*
+	-rm -f UNIDATA/ucd.all.flat.*
 
 clean:
 	-rm -f db/unicodeinfo*.sql
