@@ -1,3 +1,6 @@
+--
+-- Codepoints and their properties
+--
 CREATE TABLE codepoints (
 cp       INTEGER PRIMARY KEY NOT NULL,
 age      TEXT(12),
@@ -199,6 +202,9 @@ scx                   TEXT(255)  -- new in U6.1
 );
 CREATE INDEX codepoints_name ON codepoints ( na );
 
+--
+-- cross-references between codepoints
+--
 CREATE TABLE codepoint_relation (
   cp       INTEGER(7) REFERENCES codepoints,
   other    INTEGER(7) REFERENCES codepoints,
@@ -208,6 +214,9 @@ CREATE TABLE codepoint_relation (
 );
 CREATE INDEX codepoint_relation_cp ON codepoint_relation ( cp );
 
+--
+-- alias names for a codepoint
+--
 CREATE TABLE alias (
   cp     INTEGER REFERENCES codepoints,
   name   TEXT(255),
@@ -216,6 +225,9 @@ CREATE TABLE alias (
 CREATE INDEX alias_cp ON alias ( cp );
 CREATE INDEX alias_name ON alias ( name );
 
+--
+-- defined Unicode blocks
+--
 CREATE TABLE blocks (
   name   TEXT(255) PRIMARY KEY,
   first  INTEGER(7),
@@ -223,12 +235,18 @@ CREATE TABLE blocks (
 );
 CREATE INDEX blocks_cps ON blocks ( first, last );
 
+--
+-- The block a codepoint belongs to
+--
 CREATE TABLE codepoint_block (
   cp   INTEGER REFERENCES codepoints,
   blk  TEXT(255) REFERENCES blocks,
   UNIQUE ( cp, blk )
 );
 
+--
+-- defined Unicode planes
+--
 CREATE TABLE planes (
   name   TEXT(255) PRIMARY KEY,
   first  INTEGER(7),
@@ -243,26 +261,38 @@ INSERT INTO planes (name, first, last) VALUES ('Supplementary Special-purpose Pl
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - A', 983040, 1048575);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - B', 1048576, 1114111);
 
+--
+-- defined properties and their alternate names
+--
 CREATE TABLE propval (
   prop TEXT(12),
   abbr TEXT(255),
   name TEXT(255)
 );
 
+--
+-- Scripts defined by their ISO name
+--
 CREATE TABLE scripts (
   iso  TEXT(4) PRIMARY KEY,
   name TEXT(255)
 );
 
+--
+-- The script the codepoint belongs to
+--
 CREATE TABLE codepoint_script (
   cp   INTEGER REFERENCES codepoints,
   sc   TEXT(4) REFERENCES scripts,
   UNIQUE ( cp, sc )
 );
 
+--
+-- graphical representation in PNG format, 16x16px
+--
 CREATE TABLE codepoint_image (
   cp    INTEGER REFERENCES codepoints,
-  image TEXT,
+  image TEXT DEFAULT 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAQUlEQVQY022PSQ4AIAgD5/+fxhhbEJEL6bAV4gmc6QBMSC1C9otQ9UOwRntoeqdommsEj8iED+ssae1vbFqfz1Usi/eYaGRQ6NgAAAAASUVORK5CYII=',
   UNIQUE ( cp )
 );
 
