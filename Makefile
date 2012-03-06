@@ -11,24 +11,18 @@ db: $(DB)
 
 sql: db/unicodeinfo.full.sql
 
-db/unicodeinfo.full.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
-	cat db/create.sql > db/unicodeinfo.full.sql
-	(cd db; python db.py; cat unicodeinfo.sql >> unicodeinfo.full.sql)
-	rm -f db/unicodeinfo.sql
-	cat db/alias.sql >> db/unicodeinfo.full.sql
-	cat db/blocks.sql >> db/unicodeinfo.full.sql
-	cat db/propval.sql >> db/unicodeinfo.full.sql
+db/unicodeinfo.sql: db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
+	cat db/create.sql > db/unicodeinfo.sql
+	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
+	rm -f db/unicodeinfo.tmp.sql
+	cat db/alias.sql >> db/unicodeinfo.sql
+	cat db/blocks.sql >> db/unicodeinfo.sql
+	cat db/propval.sql >> db/unicodeinfo.sql
+	cat db/image.sql >> db/unicodeinfo.sql
 
-$(DB): db/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql
-	-rm -f "$(DB)"
-	cat db/create.sql | sqlite3 "$(DB)"
-	(cd db; python db.py
+$(DB): db/unicodeinfo.sql
+	true > "$(DB)"
 	python db/insert.py db/unicodeinfo.sql "$(DB)"
-	rm -f db/unicodeinfo.sql
-	python insert.py alias.sql "$(DB)"
-	#cat db/alias.sql | sqlite3 "$(DB)"
-	cat db/blocks.sql | sqlite3 "$(DB)"
-	cat db/propval.sql | sqlite3 "$(DB)"
 
 db/ucd.all.flat.xml:
 	wget -O db/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip

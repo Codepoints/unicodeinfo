@@ -3,14 +3,17 @@
 """Create an SQL file from a Unicode XML database
 
 The script assumes the XML file to be ./ucd.all.flat.xml. The
-result will be written into ./unicodeinfo.sql."""
+result will be written into ./unicodeinfo.tmp.sql."""
 
 from xml.parsers import expat
 import codecs
 
 xmlfile = open('ucd.all.flat.xml', 'r')
-sqlfile = codecs.open('unicodeinfo.sql', 'w', 'utf-8')
-template = u"INSERT INTO data (%(fields)s) VALUES (%(values)s);\n"
+sqlfile = codecs.open('unicodeinfo.tmp.sql', 'w', 'utf-8')
+template = u"INSERT INTO codepoints (%(fields)s) VALUES (%(values)s);\n"
+cp_template = u"INSERT INTO codepoint_relation (cp, other, relation) VALUES (%s, %s, '%s');\n"
+cpp_template = u"INSERT INTO codepoint_relation (cp, other, relation, `order`) VALUES (%s, %s, '%s', %s);\n"
+sc_template = u"INSERT INTO codepoint_script (cp, sc) VALUES (%s, '%s');\n"
 
 # boolean fields
 boolfields = (
@@ -31,7 +34,7 @@ cpfields = (
 
 # multiple codepoints (need '#' resolution, 'na' is a special case, here)
 cppfields = (
-    'na', 'dm', 'FC_NFKC', 'uc', 'lc', 'tc', 'cf', 'NFKC_CF',
+    'dm', 'FC_NFKC', 'uc', 'lc', 'tc', 'cf', 'NFKC_CF',
 )
 
 # integer fields
@@ -39,39 +42,54 @@ intfields = (
     'ccc',
 )
 
+
+relation_fields = cpfields + cppfields
+
+
 def start_element(element, attrs):
     if element.endswith('char') and 'cp' in attrs:
         cp = int(attrs['cp'], 16)
+        ucp = unicode(attrs['cp'])
         fields = [u'cp']
         values = [unicode(cp)]
+        add = ''
         for f, v in attrs.iteritems():
             if f == 'cp':
                 continue
-            fields.append(f)
-            if f in boolfields:
+            if f == 'na':
+                fields.append(f)
+                values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
+            elif f in boolfields:
+                fields.append(f)
                 if v == "Y":
                     values.append(u"1")
                 elif v == "N":
                     values.append(u"0")
                 else:
                     values.append(u"NULL")
-            elif f in cpfields:
-                if v == "#":
-                    values.append(unicode(cp))
-                elif v:
-                    values.append(unicode(int(v, 16)))
-                else:
-                    values.append(u"NULL")
-            elif f in cppfields:
-                values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
             elif f in intfields:
+                fields.append(f)
                 values.append(unicode(int(v)))
+            elif f in relation_fields:
+                v = v.replace('#', ucp).split()
+                if len(v) > 1:
+                    for i, vv in enumerate(v):
+                        add += cpp_template % (cp, int(vv, 16), f, i)
+                elif len(v) == 1:
+                    add += cp_template % (cp, int(v[0], 16), f)
+            #elif f in cppfields:
+            #    values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
+            elif f == 'sc':
+                add += sc_template % (cp, v)
             else:
+                fields.append(f)
                 values.append(u"'%s'" % v.replace("'", "''"))
         sqlfile.write(template % {
             'fields': u','.join(fields),
             'values': u','.join(values),
         })
+        if add:
+            sqlfile.write(add)
         # give us a hint, where we are at the moment
         if cp % 1000 == 0:
             print cp

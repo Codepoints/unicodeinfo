@@ -1,7 +1,6 @@
-.*.swp
 /db/ucd.all.flat.xml
 /db/ucd.sqlite
-/db/unicodeinfo.full.sql
+/db/unicodeinfo.sql
 /UNIDATA
 /db/blocks.sql
 /db/propval.sql

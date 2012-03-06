@@ -1,4 +1,4 @@
-CREATE TABLE data (
+CREATE TABLE codepoints (
 cp       INTEGER PRIMARY KEY NOT NULL,
 age      TEXT(12),
 na       TEXT(255),
@@ -7,10 +7,10 @@ gc       TEXT(2),
 ccc      INTEGER(3),  -- 0..255
 bc       TEXT(3),
 Bidi_M   INTEGER(1),  -- bool
-bmg      INTEGER(7),  -- cp
+-- bmg      INTEGER(7),  -- cp
 Bidi_C   INTEGER(1),  -- bool
 dt       TEXT(4),
-dm       TEXT(255),   -- cp*
+-- dm       TEXT(255),   -- cp*
 CE       INTEGER(1),  -- bool
 Comp_Ex  INTEGER(1),  -- bool
 NFC_QC   TEXT(1),
@@ -21,7 +21,7 @@ XO_NFC   INTEGER(1),  -- bool
 XO_NFD   INTEGER(1),  -- bool
 XO_NFKC  INTEGER(1),  -- bool
 XO_NFKD  INTEGER(1),  -- bool
-FC_NFKC  TEXT(255),   -- cp*
+-- FC_NFKC  TEXT(255),   -- cp*
 nt       TEXT(4),
 nv       TEXT(255),
 jt       TEXT(1),
@@ -33,14 +33,14 @@ Upper    INTEGER(1),  -- bool
 Lower    INTEGER(1),  -- bool
 OUpper   INTEGER(1),  -- bool
 OLower   INTEGER(1),  -- bool
-suc      INTEGER(7),  -- cp
-slc      INTEGER(7),  -- cp
-stc      INTEGER(7),  -- cp
-uc       TEXT(255),   -- cp+
-lc       TEXT(255),   -- cp+
-tc       TEXT(255),   -- cp+
-scf      INTEGER(7),  -- cp
-cf       TEXT(255),   -- cp+
+-- suc      INTEGER(7),  -- cp
+-- slc      INTEGER(7),  -- cp
+-- stc      INTEGER(7),  -- cp
+-- uc       TEXT(255),   -- cp+
+-- lc       TEXT(255),   -- cp+
+-- tc       TEXT(255),   -- cp+
+-- scf      INTEGER(7),  -- cp
+-- cf       TEXT(255),   -- cp+
 CI       INTEGER(1),  -- bool
 Cased    INTEGER(1),  -- bool
 CWCF     INTEGER(1),  -- bool
@@ -49,8 +49,8 @@ CWL      INTEGER(1),  -- bool
 CWKCF    INTEGER(1),  -- bool
 CWT      INTEGER(1),  -- bool
 CWU      INTEGER(1),  -- bool
-NFKC_CF  TEXT(255),   -- cp*
-sc       TEXT(4),
+-- NFKC_CF  TEXT(255),   -- cp*
+-- sc       TEXT(4),
 isc      TEXT(2047),
 hst      TEXT(3),
 JSN      TEXT(3),
@@ -197,10 +197,19 @@ kZVariant             TEXT(255),
 blk                   TEXT(255), -- new in U6.1
 scx                   TEXT(255)  -- new in U6.1
 );
-CREATE INDEX data_name ON data ( na );
+CREATE INDEX codepoints_name ON codepoints ( na );
+
+CREATE TABLE codepoint_relation (
+  cp       INTEGER(7) REFERENCES codepoints,
+  other    INTEGER(7) REFERENCES codepoints,
+  relation TEXT(255),
+  `order`  INTEGER(3) DEFAULT 0,
+  UNIQUE ( cp ,other, relation, `order` )
+);
+CREATE INDEX codepoint_relation_cp ON codepoint_relation ( cp );
 
 CREATE TABLE alias (
-  cp     INTEGER,
+  cp     INTEGER REFERENCES codepoints,
   name   TEXT(255),
   `type` TEXT(25)
 );
@@ -212,14 +221,20 @@ CREATE TABLE blocks (
   first  INTEGER(7),
   last   INTEGER(7)
 );
-CREATE INDEX cps ON blocks ( first, last );
+CREATE INDEX blocks_cps ON blocks ( first, last );
+
+CREATE TABLE codepoint_block (
+  cp   INTEGER REFERENCES codepoints,
+  blk  TEXT(255) REFERENCES blocks,
+  UNIQUE ( cp, blk )
+);
 
 CREATE TABLE planes (
   name   TEXT(255) PRIMARY KEY,
   first  INTEGER(7),
   last   INTEGER(7)
 );
-CREATE INDEX cps ON planes ( first, last );
+CREATE INDEX planes_cps ON planes ( first, last );
 INSERT INTO planes (name, first, last) VALUES ('Basic Multilingual Plane', 0, 65535);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Multilingual Plane', 65536, 131071);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Ideographic Plane', 131072, 196607);
@@ -232,5 +247,22 @@ CREATE TABLE propval (
   prop TEXT(12),
   abbr TEXT(255),
   name TEXT(255)
+);
+
+CREATE TABLE scripts (
+  iso  TEXT(4) PRIMARY KEY,
+  name TEXT(255)
+);
+
+CREATE TABLE codepoint_script (
+  cp   INTEGER REFERENCES codepoints,
+  sc   TEXT(4) REFERENCES scripts,
+  UNIQUE ( cp, sc )
+);
+
+CREATE TABLE codepoint_image (
+  cp    INTEGER REFERENCES codepoints,
+  image TEXT,
+  UNIQUE ( cp )
 );
 
