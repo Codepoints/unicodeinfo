@@ -23,7 +23,22 @@ def handle_buf(buffer, sqlfile, template):
     cp = int(buffer.split("\t")[0], 16)
     for line in buffer.split("\n"):
         if line.startswith("\t= "):
-            for alias in line[3:].split(','):
+            buffer = ""
+            aliases = []
+            for chunk in line[3:].split(','):
+                if buffer and ")" in chunk:
+                    aliases.append(buffer+","+chunk)
+                    buffer = ""
+                elif buffer:
+                    buffer += ',' + chunk
+                elif "(" in chunk and ")" not in chunk:
+                    buffer = chunk
+                else:
+                    aliases.append(chunk)
+            if buffer:
+                aliases.append(buffer)
+
+            for alias in aliases:
                 sqlfile.write(template % (cp, alias.strip().decode("ISO-8859-1").replace("'", "''"), 'alias'))
     return None
 
