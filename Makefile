@@ -11,7 +11,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: UNIDATA/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py
+db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
@@ -24,26 +24,25 @@ $(DB): db/unicodeinfo.sql
 	true > "$(DB)"
 	python db/insert.py db/unicodeinfo.sql "$(DB)"
 
-UNIDATA/ucd.all.flat.xml:
-	test -d UNIDATA || mkdir UNIDATA
-	wget -O UNIDATA/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
-	cd UNIDATA; unzip ucd.all.flat.zip
-	rm -f UNIDATA/ucd.all.flat.zip
+data/ucd.all.flat.xml:
+	test -d data || mkdir data
+	wget -O data/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
+	cd data; unzip ucd.all.flat.zip
+	rm -f data/ucd.all.flat.zip
 
-UNIDATA/Blocks.txt: UNIDATA/ReadMe.txt
-UNIDATA/Scripts.txt: UNIDATA/ReadMe.txt
-UNIDATA/PropertyValueAliases.txt: UNIDATA/ReadMe.txt
+data/unicode/Blocks.txt: data/unicode/ReadMe.txt
+data/unicode/Scripts.txt: data/unicode/ReadMe.txt
+data/unicode/PropertyValueAliases.txt: data/unicode/ReadMe.txt
 
-UNIDATA/ReadMe.txt:
-	test -d UNIDATA || mkdir UNIDATA
-	wget -O UNIDATA/UCD.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UCD.zip
-	cd UNIDATA; unzip -o UCD.zip
-	rm -f UNIDATA/UCD.zip
+data/unicode/ReadMe.txt:
+	test -d data/unicode || mkdir -p data/unicode
+	wget -O data/unicode/UCD.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UCD.zip
+	cd data/unicode; unzip -o UCD.zip
+	rm -f data/unicode/UCD.zip
 
 dist-clean: clean
-	-rm -f -r UNIDATA
+	-rm -f -r data
 	-rm -f "$(DB)"
-	-rm -f UNIDATA/ucd.all.flat.*
 
 clean:
 	-rm -f db/unicodeinfo*.sql
@@ -53,18 +52,18 @@ clean:
 	-rm -f db/propval.sql
 	-rm -f db/digraphs.sql
 
-db/blocks.sql: UNIDATA/Blocks.txt db/blocks.py
+db/blocks.sql: data/unicode/Blocks.txt db/blocks.py
 	cd db; python blocks.py
 
-db/digraphs.sql: UNIDATA/rfc1345.txt
-	cat UNIDATA/rfc1345.txt | \
+db/digraphs.sql: data/rfc1345.txt
+	cat data/rfc1345.txt | \
 	sed -n '/^ [^ ]\{1,6\} \+[0-9A-Fa-f]\{4\}    [^ ].*$$/p' | \
 	sed 's/^ \([^ ]\{1,6\}\) \+\([0-9A-Fa-f]\{4\}\)    [^ ].*$$/\1\t\2/' > db/digraphs.tmp
 	perl -p -e 's/^([^\t]+)\t([0-9a-f]{4})$$/"INSERT INTO alias (cp, name, `type`) VALUES (".hex("$$2").", '"'"'".join("'"''"'", split("'"'"'", $$1))."'"'"', '"'digraph'"');"/e' db/digraphs.tmp > db/digraphs.sql
 	rm db/digraphs.tmp
 
-UNIDATA/rfc1345.txt:
-	test -d UNIDATA || mkdir UNIDATA
+data/rfc1345.txt:
+	test -d data || mkdir data
 	wget -q -O "$@" http://www.rfc-editor.org/rfc/rfc1345.txt
 
 db/htmlentities.sql:

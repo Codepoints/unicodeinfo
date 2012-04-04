@@ -2,14 +2,14 @@
 
 """Create an SQL file from the list of Unicode blocks
 
-The script assumes the txt file to be ../UNIDATA/Blocks.txt. The
+The script assumes the txt file to be ../data/unicode/Blocks.txt. The
 result will be written into ./blocks.sql"""
 
 import re
 import codecs
 import sys
 
-txtfile = open('../UNIDATA/Blocks.txt', 'r')
+txtfile = open('../data/unicode/Blocks.txt', 'r')
 sqlfile = codecs.open('blocks.sql', 'w', 'utf-8')
 template = u"INSERT INTO blocks (name, first, last) VALUES (%(values)s);\n"
 pat = re.compile(r'^([0-9A-F]{4,6})\.\.([0-9A-F]{4,6}); (.+)\n$', re.I)
