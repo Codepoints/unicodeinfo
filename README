@@ -3,63 +3,74 @@
 
          Tools to squeeze knowledge out of the Unicode standard
 
+
  SQLITE DATABASE:
 ------------------
 
 The directory db contains tools to create an Sqlite3 database
-from Unicode’s XML data. You need ucd.all.flat.xml from
-    ftp://unicode.org/Public/6.1.0/ucdxml/ucd.all.flat.zip
-to live in db, or an internet connection and wget for automatic fetching. Then
-run `make db` to create the database db/ucd.sqlite .
+from Unicode’s data. Run `make` to create the database db/ucd.sqlite.
 
 The database itself contains every field as defined in “Unicode
 Character Database in XML” <http://www.unicode.org/reports/tr42/>.
 Boolean fields (in the original represented by literal "Y" and "N"
-values) are converted to INTEGER(1) fields, referenced codepoints are put in
-a separate table. The “#” notation mentioned in TR42 is resolved.
+values) are converted to INTEGER(1) fields, referenced codepoints are
+put in a separate table. The “#” notation mentioned in TR42 is resolved.
 
 Every codepoint in the BMP has a graphical representation (PNG, 16x16px)
-attached. This is provided by the GNU Unifont project (see license below).
+attached. This is provided by the GNU Unifont project (see license
+below).
+
+The db also contains tables of all blocks, planes, scripts and named
+character sequences as well as usual aliases for codepoints (including
+HTML entities and digraph names).
+
+For building the database you need:
+
+* Python 2.5 or newer
+* GNU make or compatible
+* wget for file retreaval
+* basic tools like Perl, sed, cat. Should be there on any *NIX (incl.
+  Mac and Cygwin)
+* for the images:
+  + ImageMagick's convert
+  + pngcrush
+
+All in all it should be straight forward to get from downloading to the
+database.
+
+
+ PYTHON TOOLS:
+---------------
+
+The folder python/unicodeinfo contains a python package for handling the
+information of the SQLite database. It's not fully finished yet
+unfortunately. Use at your own risk.
+
+
+
+--
+here be dragons.
+
 
  THE SMALL PRINT:
 ------------------
 
-Usage is granted under an MIT like license listed below, as long as this
+The database tools are provided in the public domain, as long as this
 doesn’t collide with the Terms of Usage of the Unicode Consortium
 <http://www.unicode.org/copyright.html>. The name “unicodeinfo” of this
 project does not imply any kind of affiliation of the author with
-Unicode Inc.
+Unicode Inc. The graphical representations retrieved via db/unifont.sh
+are subject to the UNIFONT LICENSE below.
 
-
- LICENSE:
-----------
-
-Copyright © 2010 Manuel Strehl
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-“Software”), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The applicable license, where public domain dedication is not possible,
+is the Creative Commons Zero License:
+          <http://creativecommons.org/publicdomain/zero/1.0/>
 
 
  UNIFONT LICENSE:
 ------------------
 
-If you want to use the images provided by db/image.sql you are bound to
+If you want to use the images provided by db/unifont.sh you are bound to
 the following usage terms re GNU Unifont:
 
 Roman Czyborra released his work (Perl scripts and font .hex files)
