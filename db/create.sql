@@ -296,3 +296,14 @@ CREATE TABLE codepoint_image (
   UNIQUE ( cp )
 );
 
+--
+-- named sequences of characters, TR #34
+--
+CREATE TABLE namedsequences (
+  cp      INTEGER(7) REFERENCES codepoints,
+  name    TEXT(255),
+  `order` INTEGER(3),
+  UNIQUE ( cp, name, `order` )
+);
+CREATE INDEX namedsequences_cp ON namedsequences ( cp );
+

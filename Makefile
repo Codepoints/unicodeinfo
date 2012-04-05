@@ -11,7 +11,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql
+db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql db/namedsequences.sql
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
@@ -76,6 +76,9 @@ db/alias.sql: db/htmlentities.sql db/digraphs.sql db/alias.py
 
 db/propval.sql: db/propval.py
 	cd db; python propval.py
+
+db/namedsequences.sql: db/namedsequences.py
+	cd db; python namedsequences.py
 
 db/images.sql: data/unifont/uni00.bmp
 	db/unifont.sh
