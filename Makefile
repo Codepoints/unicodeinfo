@@ -11,14 +11,14 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py
+db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
 	cat db/alias.sql >> db/unicodeinfo.sql
 	cat db/blocks.sql >> db/unicodeinfo.sql
 	cat db/propval.sql >> db/unicodeinfo.sql
-	cat db/image.sql >> db/unicodeinfo.sql
+	cat db/images.sql >> db/unicodeinfo.sql
 
 $(DB): db/unicodeinfo.sql
 	true > "$(DB)"
@@ -76,4 +76,14 @@ db/alias.sql: db/htmlentities.sql db/digraphs.sql db/alias.py
 
 db/propval.sql: db/propval.py
 	cd db; python propval.py
+
+db/images.sql: data/unifont/uni00.bmp
+	db/unifont.sh
+
+data/unifont/uni00.bmp:
+	test -d data/unifont || mkdir -p data/unifont
+	for x in $$(seq 0 15); do for y in $$(seq 0 15); do \
+		wget -q -O $$(printf 'data/unifont/uni%X%X.bmp' $$x $$y) \
+		$$(printf 'http://unifoundry.com/bmp-final/uni%X%X.bmp' $$x $$y); \
+		done; done
 
