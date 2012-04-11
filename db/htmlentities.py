@@ -8,7 +8,7 @@ from htmlentitydefs import entitydefs
 import codecs
 
 sqlfile = codecs.open('htmlentities.sql', 'w', 'utf-8')
-template = u"INSERT INTO alias (cp, name, `type`) VALUES (%s, '%s', 'html');\n"
+template = u"INSERT INTO codepoint_alias (cp, alias, `type`) VALUES (%s, '%s', 'html');\n"
 
 for k, v in entitydefs.iteritems():
     k = unicode(k)
