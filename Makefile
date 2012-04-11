@@ -13,7 +13,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql db/wp.sql db/namedsequences.sql
+db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql db/wp.sql db/namedsequences.sql db/confusables.sql
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
@@ -23,6 +23,7 @@ db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.
 	cat db/images.sql >> db/unicodeinfo.sql
 	cat db/wp.sql >> db/unicodeinfo.sql
 	cat db/namedsequences.sql >> db/unicodeinfo.sql
+	cat db/confusables.sql >> db/unicodeinfo.sql
 
 $(DB): db/unicodeinfo.sql
 	true > "$(DB)"
@@ -89,6 +90,13 @@ db/images.sql: data/unifont/uni00.bmp
 
 db/wp.sql: db/wp.py
 	if [[ $(WIKIPEDIA) == 1 ]]; then cd db; python wp.py; else touch "$@"; fi
+
+db/confusables.sql: db/confusables.py data/confusables.txt
+	cd db; python confusables.py
+
+data/confusables.txt:
+	test -d data || mkdir data
+	wget -q -O "$@" http://www.unicode.org/Public/security/latest/confusables.txt
 
 data/unifont/uni00.bmp:
 	test -d data/unifont || mkdir -p data/unifont

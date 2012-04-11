@@ -306,6 +306,18 @@ CREATE TABLE codepoint_abstract (
 );
 
 --
+-- other codepoints to be confusable with this
+--
+CREATE TABLE codepoint_confusables (
+  id       INTEGER,
+  cp       INTEGER REFERENCES codepoints,
+  other    INTEGER REFERENCES codepoints,
+  `type`   TEXT,
+  `order`  INTEGER
+);
+CREATE INDEX codepoint_confusables_cp ON codepoint_confusables ( cp );
+
+--
 -- named sequences of characters, TR #34
 --
 CREATE TABLE namedsequences (
