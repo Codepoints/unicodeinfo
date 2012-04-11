@@ -217,13 +217,13 @@ CREATE INDEX codepoint_relation_cp ON codepoint_relation ( cp );
 --
 -- alias names for a codepoint
 --
-CREATE TABLE alias (
+CREATE TABLE codepoint_alias (
   cp     INTEGER REFERENCES codepoints,
-  name   TEXT(255),
+  alias  TEXT(255),
   `type` TEXT(25)
 );
-CREATE INDEX alias_cp ON alias ( cp );
-CREATE INDEX alias_name ON alias ( name );
+CREATE INDEX codepoint_alias_cp ON codepoint_alias ( cp );
+CREATE INDEX codepoint_alias_alias ON codepoint_alias ( alias );
 
 --
 -- defined Unicode blocks

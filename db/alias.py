@@ -9,7 +9,7 @@ import codecs
 import string
 
 sqlfile = codecs.open('alias.sql', 'a', 'utf-8')
-template = u"INSERT INTO alias (cp, name, `type`) VALUES (%s, '%s', '%s');\n"
+template = u"INSERT INTO codepoint_alias (cp, alias, `type`) VALUES (%s, '%s', '%s');\n"
 
 mapfile = open('../data/unicode/NameAliases.txt', 'r')
 for line in mapfile.readlines():
