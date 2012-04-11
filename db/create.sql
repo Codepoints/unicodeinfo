@@ -297,6 +297,15 @@ CREATE TABLE codepoint_image (
 );
 
 --
+-- wikipedia abstract about a codepoint
+--
+CREATE TABLE codepoint_abstract (
+  cp       INTEGER REFERENCES codepoints,
+  abstract TEXT,
+  UNIQUE ( cp )
+);
+
+--
 -- named sequences of characters, TR #34
 --
 CREATE TABLE namedsequences (

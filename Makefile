@@ -2,6 +2,8 @@
 
 UNICODE_VERSION = 6.1.0
 DB = db/ucd.sqlite
+UNIFONT = 1
+WIKIPEDIA = 1
 
 .PHONY: clean dist-clean sql db all
 
@@ -11,7 +13,7 @@ db: $(DB)
 
 sql: db/unicodeinfo.sql
 
-db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql db/namedsequences.sql
+db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.sql db/db.py db/images.sql db/wp.sql db/namedsequences.sql
 	cat db/create.sql > db/unicodeinfo.sql
 	(cd db; python db.py; cat unicodeinfo.tmp.sql >> unicodeinfo.sql)
 	rm -f db/unicodeinfo.tmp.sql
@@ -19,6 +21,8 @@ db/unicodeinfo.sql: data/ucd.all.flat.xml db/blocks.sql db/alias.sql db/propval.
 	cat db/blocks.sql >> db/unicodeinfo.sql
 	cat db/propval.sql >> db/unicodeinfo.sql
 	cat db/images.sql >> db/unicodeinfo.sql
+	cat db/wp.sql >> db/unicodeinfo.sql
+	cat db/namedsequences.sql >> db/unicodeinfo.sql
 
 $(DB): db/unicodeinfo.sql
 	true > "$(DB)"
@@ -81,7 +85,10 @@ db/namedsequences.sql: db/namedsequences.py
 	cd db; python namedsequences.py
 
 db/images.sql: data/unifont/uni00.bmp
-	db/unifont.sh
+	if [[ $(UNIFONT) == 1 ]]; then db/unifont.sh; else touch "$@"; fi
+
+db/wp.sql: db/wp.py
+	if [[ $(WIKIPEDIA) == 1 ]]; then cd db; python wp.py; else touch "$@"; fi
 
 data/unifont/uni00.bmp:
 	test -d data/unifont || mkdir -p data/unifont
