@@ -10,24 +10,32 @@ import sqlite3
 import sys
 
 if len(sys.argv) != 3:
-    raise ValueError("Need exactly two args")
+    raise ValueError("Need exactly two args: insert.py sql db")
 sqlfile = sys.argv[1]
 db = sys.argv[2]
-if not os.path.isfile(sqlfile):
+if sqlfile is "-":
+    sqlfile = sys.stdin
+elif not os.path.isfile(sqlfile):
     raise IOError("SQL file not found")
+else:
+    sqlfile = open(sqlfile, 'r')
 if not os.path.isfile(db):
     raise IOError("Database not found")
 
 conn = sqlite3.connect(db)
 cur = conn.cursor()
 
-sql = open(sqlfile, 'r').read()
+sql = sqlfile.read()
 inserts = sql.split(";\n")
 
 sys.stdout.write(10*' ')
 sys.stdout.flush()
 for i, insert in enumerate(inserts):
-    cur.execute(insert+';')
+    try:
+        cur.execute(insert+';')
+    except sqlite3.OperationalError, e:
+        print insert
+        raise
     if i > 0 and i % 1000 == 0:
         sys.stdout.write(10*'\b' + '%10s' % i)
         sys.stdout.flush()
