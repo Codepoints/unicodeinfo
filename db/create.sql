@@ -302,7 +302,8 @@ CREATE TABLE codepoint_image (
 CREATE TABLE codepoint_abstract (
   cp       INTEGER REFERENCES codepoints,
   abstract TEXT,
-  UNIQUE ( cp )
+  lang     TEXT DEFAULT 'en',
+  UNIQUE ( cp, lang )
 );
 
 --
