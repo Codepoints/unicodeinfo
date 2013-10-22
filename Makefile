@@ -1,6 +1,6 @@
 
 
-UNICODE_VERSION = 6.2.0
+UNICODE_VERSION = 6.3.0
 DB = db/ucd.sqlite
 UNIFONT = 1
 WIKIPEDIA = 1

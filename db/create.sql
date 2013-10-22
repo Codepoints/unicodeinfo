@@ -198,7 +198,9 @@ kWubi                 TEXT(2047),
 kXerox                TEXT(7),
 kZVariant             TEXT(255),
 blk                   TEXT(255), -- new in U6.1
-scx                   TEXT(255)  -- new in U6.1
+scx                   TEXT(255), -- new in U6.1
+-- bpb                   INTEGER(7),    -- cp, new in U6.3
+bpt                   TEXT(1)   -- /[ocn]{1}/, new in U6.3
 );
 CREATE INDEX codepoints_name ON codepoints ( na );
 

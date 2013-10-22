@@ -27,9 +27,9 @@ boolfields = (
     'VS', 'NChar',
 )
 
-# single codepoints (INT)
+# single codepoints (INT, need '#' resolution)
 cpfields = (
-    'cp', 'bmg', 'suc', 'slc', 'stc', 'scf',
+    'cp', 'bmg', 'suc', 'slc', 'stc', 'scf', 'bpb',
 )
 
 # multiple codepoints (need '#' resolution, 'na' is a special case, here)
