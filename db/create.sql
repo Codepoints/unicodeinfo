@@ -203,6 +203,8 @@ scx                   TEXT(255), -- new in U6.1
 bpt                   TEXT(1)   -- /[ocn]{1}/, new in U6.3
 );
 CREATE INDEX codepoints_name ON codepoints ( na );
+CREATE INDEX codepoints_blk ON codepoints ( blk );
+CREATE INDEX codepoints_scx ON codepoints ( scx );
 
 --
 -- cross-references between codepoints
@@ -212,9 +214,10 @@ CREATE TABLE codepoint_relation (
   other    INTEGER(7) REFERENCES codepoints,
   relation TEXT(255),
   `order`  INTEGER(3) DEFAULT 0,
-  UNIQUE ( cp ,other, relation, `order` )
+  UNIQUE ( cp, other, relation, `order` )
 );
 CREATE INDEX codepoint_relation_cp ON codepoint_relation ( cp );
+CREATE INDEX codepoint_relation_other ON codepoint_relation ( other );
 
 --
 -- alias names for a codepoint
@@ -245,6 +248,8 @@ CREATE TABLE codepoint_block (
   blk  TEXT(255) REFERENCES blocks,
   UNIQUE ( cp, blk )
 );
+CREATE INDEX codepoint_block_cp ON codepoint_block ( cp );
+CREATE INDEX codepoint_block_blk ON codepoint_block ( blk );
 
 --
 -- defined Unicode planes
@@ -271,6 +276,8 @@ CREATE TABLE propval (
   abbr TEXT(255),
   name TEXT(255)
 );
+CREATE INDEX propval_prop ON propval ( prop );
+CREATE INDEX propval_prop_abbr ON propval ( prop, abbr );
 
 --
 -- Scripts defined by their ISO name
@@ -288,6 +295,8 @@ CREATE TABLE codepoint_script (
   sc   TEXT(4) REFERENCES scripts,
   UNIQUE ( cp, sc )
 );
+CREATE INDEX codepoint_script_cp ON codepoint_script ( cp );
+CREATE INDEX codepoint_script_sc ON codepoint_script ( sc );
 
 --
 -- graphical representation in PNG format, 16x16px
@@ -307,6 +316,7 @@ CREATE TABLE codepoint_abstract (
   lang     TEXT DEFAULT 'en',
   UNIQUE ( cp, lang )
 );
+CREATE INDEX codepoint_abstract_cp ON codepoint_abstract ( cp );
 
 --
 -- other codepoints to be confusable with this
@@ -319,6 +329,7 @@ CREATE TABLE codepoint_confusables (
   `order`  INTEGER
 );
 CREATE INDEX codepoint_confusables_cp ON codepoint_confusables ( cp );
+CREATE INDEX codepoint_confusables_other ON codepoint_confusables ( other );
 
 --
 -- named sequences of characters, TR #34
@@ -330,4 +341,3 @@ CREATE TABLE namedsequences (
   UNIQUE ( cp, name, `order` )
 );
 CREATE INDEX namedsequences_cp ON namedsequences ( cp );
-
