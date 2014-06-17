@@ -56,6 +56,10 @@ clean:
 	-rm -f db/alias.sql
 	-rm -f db/propval.sql
 	-rm -f db/digraphs.sql
+	-rm -f db/namedsequences.sql
+	-rm -f db/images.sql
+	-rm -f db/wp.sql
+	-rm -f db/confusables.sql
 
 db/blocks.sql: data/unicode/Blocks.txt db/blocks.py
 	cd db; python blocks.py
