@@ -317,6 +317,19 @@ CREATE TABLE codepoint_abstract (
   UNIQUE ( cp, lang )
 );
 CREATE INDEX codepoint_abstract_cp ON codepoint_abstract ( cp );
+CREATE INDEX codepoint_abstract_cp_lang ON codepoint_abstract ( cp, lang );
+
+--
+-- wikipedia abstract about a Unicode block
+--
+CREATE TABLE block_abstract (
+  block    TEXT REFERENCES blocks,
+  abstract TEXT,
+  lang     TEXT DEFAULT 'en',
+  UNIQUE ( block, lang )
+);
+CREATE INDEX block_abstract_block ON block_abstract ( block );
+CREATE INDEX block_abstract_block_lang ON block_abstract ( block, lang );
 
 --
 -- other codepoints to be confusable with this
