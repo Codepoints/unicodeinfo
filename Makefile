@@ -96,7 +96,7 @@ db/propval.sql: db/propval.py
 db/namedsequences.sql: db/namedsequences.py
 	cd db; python namedsequences.py
 
-db/images.sql: data/unifont/uni00.bmp
+db/images.sql: data/unifont/uni0000.png
 	if [[ $(UNIFONT) == 1 ]]; then db/unifont.sh; else touch "$@"; fi
 
 db/wp.sql: db/wp.py
@@ -110,11 +110,17 @@ data/confusables.txt:
 	@mkdir -p data
 	@wget -q -O "$@" http://www.unicode.org/Public/security/latest/confusables.txt
 
-data/unifont/uni00.bmp:
+data/unifont/uni0000.png:
 	$(info * Fetch UniFont data)
 	@mkdir -p data/unifont
 	@for x in $$(seq 0 15); do for y in $$(seq 0 15); do \
-		wget -q -O $$(printf 'data/unifont/uni%X%X.bmp' $$x $$y) \
-		$$(printf 'http://unifoundry.com/bmp-final/uni%X%X.bmp' $$x $$y); \
+		wget -q -O $$(printf 'data/unifont/uni00%X%X.png' $$x $$y) \
+		$$(printf 'http://unifoundry.com/png/plane00/uni00%X%X.png' $$x $$y); \
 		done; done
+	@for x in $$(seq 0 15); do for y in $$(seq 0 15); do \
+		wget -q -O $$(printf 'data/unifont/uni01%X%X.png' $$x $$y) \
+		$$(printf 'http://unifoundry.com/png/plane01/uni01%X%X.png' $$x $$y); \
+		done; done
+	@wget -q -O data/unifont/uni0E00.png http://unifoundry.com/png/plane0E/uni0E00.png
+	@wget -q -O data/unifont/uni0E01.png http://unifoundry.com/png/plane0E/uni0E01.png
 
