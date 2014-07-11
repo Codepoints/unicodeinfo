@@ -168,6 +168,9 @@ def fetch_extract(wikipedia_title):
 
     if "pages" in data.get("query", {}):
         p = data["query"]["pages"]
+        if "extract" not in p[p.keys()[0]]:
+            logger.warning('No extract found for %s!' % wikipedia_title)
+            return None
         extract = p[p.keys()[0]]["extract"]
 
     return extract
