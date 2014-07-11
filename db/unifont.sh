@@ -17,7 +17,7 @@ for u in ../data/unifont/uni????.png; do
     ax=$(echo 'ibase=10;obase=16;'"$a" | bc)
     for b in $(seq 0 15); do
       bx=$(echo 'ibase=10;obase=16;'"$b" | bc)
-      let x=64+8+a*32
+      let x=52+a*32
       let y=32+7+b*32
       F="$z$ax$bx"
       echo -n "U+$F"
