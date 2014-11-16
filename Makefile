@@ -32,7 +32,7 @@ $(DB): db/unicodeinfo.sql
 	@python db/insert.py db/unicodeinfo.sql "$(DB)"
 
 data/ucd.all.flat.xml:
-	$(info * Fetch Unicode XML data)
+	$(info * Fetch Unicode $(UNICODE_VERSION) XML data)
 	@mkdir -p data
 	@wget -q -O data/ucd.all.flat.zip http://www.unicode.org/Public/$(UNICODE_VERSION)/ucdxml/ucd.all.flat.zip
 	@cd data; unzip -qq ucd.all.flat.zip
@@ -48,6 +48,9 @@ data/unicode/ReadMe.txt:
 	@wget -q -O data/unicode/UCD.zip http://www.unicode.org/Public/zipped/$(UNICODE_VERSION)/UCD.zip
 	@cd data/unicode; unzip -qq -o UCD.zip
 	@rm -f data/unicode/UCD.zip
+
+data/htmlentities.json:
+	@wget -q -O $@ https://html.spec.whatwg.org/entities.json
 
 dist-clean: clean
 	-rm -f -r data
@@ -81,8 +84,9 @@ data/rfc1345.txt:
 	@mkdir -p data
 	@wget -q -O "$@" http://www.rfc-editor.org/rfc/rfc1345.txt
 
-db/htmlentities.sql:
+db/htmlentities.sql: data/htmlentities.json
 	cd db; python htmlentities.py
+	sort -n $@ -o $@
 
 db/alias.sql: db/htmlentities.sql db/digraphs.sql db/alias.py
 	$(info * Collect aliases for codepoints)

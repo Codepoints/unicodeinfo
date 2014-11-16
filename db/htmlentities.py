@@ -4,22 +4,15 @@
 
 The result will be written into ./htmlentities.sql"""
 
-from htmlentitydefs import entitydefs
-import codecs
+import json
 
-sqlfile = codecs.open('htmlentities.sql', 'w', 'utf-8')
+sqlfile = open('htmlentities.sql', 'w')
+with open('../data/htmlentities.json') as _json:
+    source = json.load(_json)
 template = u"INSERT INTO codepoint_alias (cp, alias, `type`) VALUES (%s, '%s', 'html');\n"
 
-for k, v in entitydefs.iteritems():
-    k = unicode(k)
-    v = v.decode("ISO-8859-1")
-    if v[0:2] == '&#':
-        v = int(v[2:-1])
-    elif len(v) == 1:
-        v = ord(v)
-    else:
-        raise ValueError(v)
-    sqlfile.write(template % (v, k))
+for k, v in source.iteritems():
+    if len(v['codepoints']) == 1 and k[-1] == ';':
+        sqlfile.write(template % (v['codepoints'][0], k[1:-1]))
 
 sqlfile.close()
-
