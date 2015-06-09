@@ -101,10 +101,10 @@ db/namedsequences.sql: db/namedsequences.py
 	cd db; python namedsequences.py
 
 db/images.sql: data/unifont/uni0000.png
-	if [[ $(UNIFONT) == 1 ]]; then db/unifont.sh; else touch "$@"; fi
+	if [[ "$(UNIFONT)" == "1" ]]; then db/unifont.sh; else touch "$@"; fi
 
 db/wp.sql: db/wp.py
-	if [[ $(WIKIPEDIA) == 1 ]]; then cd db; python wp.py; else touch "$@"; fi
+	if [[ "$(WIKIPEDIA)" == "1" ]]; then cd db; python wp.py; else touch "$@"; fi
 
 db/confusables.sql: db/confusables.py data/confusables.txt
 	cd db; python confusables.py
