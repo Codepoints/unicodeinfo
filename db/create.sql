@@ -264,6 +264,16 @@ INSERT INTO planes (name, first, last) VALUES ('Basic Multilingual Plane', 0, 65
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Multilingual Plane', 65536, 131071);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Ideographic Plane', 131072, 196607);
 INSERT INTO planes (name, first, last) VALUES ('Tertiary Ideographic Plane', 196608, 262143);
+INSERT INTO planes (name, first, last) VALUES ('Plane 5 (unassigned)', 262144, 327679);
+INSERT INTO planes (name, first, last) VALUES ('Plane 6 (unassigned)', 327680, 393215);
+INSERT INTO planes (name, first, last) VALUES ('Plane 7 (unassigned)', 393216, 458751);
+INSERT INTO planes (name, first, last) VALUES ('Plane 8 (unassigned)', 458752, 524287);
+INSERT INTO planes (name, first, last) VALUES ('Plane 9 (unassigned)', 524288, 589823);
+INSERT INTO planes (name, first, last) VALUES ('Plane 10 (unassigned)', 589824, 655359);
+INSERT INTO planes (name, first, last) VALUES ('Plane 11 (unassigned)', 655360, 720895);
+INSERT INTO planes (name, first, last) VALUES ('Plane 12 (unassigned)', 720896, 786431);
+INSERT INTO planes (name, first, last) VALUES ('Plane 13 (unassigned)', 786432, 851967);
+INSERT INTO planes (name, first, last) VALUES ('Plane 14 (unassigned)', 851968, 917503);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Special-purpose Plane', 917504, 983039);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - A', 983040, 1048575);
 INSERT INTO planes (name, first, last) VALUES ('Supplementary Private Use Area - B', 1048576, 1114111);
