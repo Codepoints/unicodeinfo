@@ -46,53 +46,61 @@ intfields = (
 relation_fields = cpfields + cppfields
 
 
-def start_element(element, attrs):
-    if element.endswith('char') and 'cp' in attrs:
-        cp = int(attrs['cp'], 16)
-        ucp = unicode(attrs['cp'])
-        fields = [u'cp']
-        values = [unicode(cp)]
-        add = ''
-        for f, v in attrs.iteritems():
-            if f == 'cp':
-                continue
-            if f == 'na':
-                fields.append(f)
-                values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
-            elif f in boolfields:
-                fields.append(f)
-                if v == "Y":
-                    values.append(u"1")
-                elif v == "N":
-                    values.append(u"0")
-                else:
-                    values.append(u"NULL")
-            elif f in intfields:
-                fields.append(f)
-                values.append(unicode(int(v)))
-            elif f in relation_fields:
-                v = v.replace('#', ucp).split()
-                if len(v) > 1:
-                    for i, vv in enumerate(v):
-                        add += cpp_template % (cp, int(vv, 16), f, i+1)
-                elif len(v) == 1:
-                    add += cp_template % (cp, int(v[0], 16), f)
-            #elif f in cppfields:
-            #    values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(attrs['cp'])))
-            elif f == 'sc':
-                add += sc_template % (cp, v)
+def handle_cp(_cp, attrs):
+    cp = int(_cp, 16)
+    ucp = unicode(_cp)
+    fields = [u'cp']
+    values = [unicode(cp)]
+    add = ''
+    for f, v in attrs.iteritems():
+        if f in ('cp', 'first-cp', 'last-cp'):
+            continue
+        if f == 'na':
+            fields.append(f)
+            values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(_cp)))
+        elif f in boolfields:
+            fields.append(f)
+            if v == "Y":
+                values.append(u"1")
+            elif v == "N":
+                values.append(u"0")
             else:
-                fields.append(f)
-                values.append(u"'%s'" % v.replace("'", "''"))
-        sqlfile.write(template % {
-            'fields': u','.join(fields),
-            'values': u','.join(values),
-        })
-        if add:
-            sqlfile.write(add)
-        # give us a hint, where we are at the moment
-        if cp % 1000 == 0:
-            print cp
+                values.append(u"NULL")
+        elif f in intfields:
+            fields.append(f)
+            values.append(unicode(int(v)))
+        elif f in relation_fields:
+            v = v.replace('#', ucp).split()
+            if len(v) > 1:
+                for i, vv in enumerate(v):
+                    add += cpp_template % (cp, int(vv, 16), f, i+1)
+            elif len(v) == 1:
+                add += cp_template % (cp, int(v[0], 16), f)
+        #elif f in cppfields:
+        #    values.append(u"'%s'" % v.replace("'", "''").replace('#', unicode(_cp)))
+        elif f == 'sc':
+            add += sc_template % (cp, v)
+        else:
+            fields.append(f)
+            values.append(u"'%s'" % v.replace("'", "''"))
+    sqlfile.write(template % {
+        'fields': u','.join(fields),
+        'values': u','.join(values),
+    })
+    if add:
+        sqlfile.write(add)
+    # give us a hint, where we are at the moment
+    if cp % 1000 == 0:
+        print cp
+
+
+def start_element(element, attrs):
+    if element in ('char', 'noncharacter') and 'cp' in attrs:
+        handle_cp(attrs['cp'], attrs)
+    elif element == 'noncharacter' and 'first-cp' in attrs and 'last-cp' in attrs:
+        for icp in range(int(attrs['first-cp'], 16), int(attrs['last-cp'], 16)+1):
+            handle_cp('%X' % icp, attrs)
+
 
 # parse the file with expat
 p = expat.ParserCreate()
