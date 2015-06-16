@@ -1,6 +1,6 @@
 
 SHELL := /bin/bash
-UNICODE_VERSION = 7.0.0
+UNICODE_VERSION = 8.0.0
 DB = db/ucd.sqlite
 UNIFONT = 1
 WIKIPEDIA = 1
