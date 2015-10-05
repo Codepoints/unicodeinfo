@@ -1,6 +1,6 @@
 ---
 title: Unicodeinfo: Tools to squeeze knowledge out of the Unicode standard
-layout: post
+css: tufte/tufte
 ---
 
 # Unicodeinfo
