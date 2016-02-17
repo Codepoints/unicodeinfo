@@ -59,6 +59,7 @@ hst      TEXT(3),
 JSN      TEXT(3),
 InSC     TEXT(24),    -- new in U6
 InMC     TEXT(24),    -- new in U6
+InPC     TEXT(24),    -- new in U8
 IDS      INTEGER(1),  -- bool
 OIDS     INTEGER(1),  -- bool
 XIDS     INTEGER(1),  -- bool
@@ -155,6 +156,7 @@ kIRG_USource          TEXT(8),
 kIRG_VSource          TEXT(6),
 kJHJ                  TEXT(2047),
 kJIS0213              TEXT(7),
+kJa                   TEXT(6),    -- new in U8
 kJapaneseKun          TEXT(255),
 kJapaneseOn           TEXT(255),
 kJis0                 TEXT(4),
