@@ -118,8 +118,8 @@ def fetch_cache():
 
 def fetch_single_letter_articles():
     """fetch from wikipedia the list of all single letter articles"""
-    req = urllib2.Request('http://dumps.wikimedia.org/enwiki/'+
-            'latest/enwiki-latest-all-titles-in-ns0.gz',
+    req = urllib2.Request('https://dumps.wikimedia.org/'+LANG+'wiki/'+
+            'latest/'+LANG+'wiki-latest-all-titles-in-ns0.gz',
             headers=HEADERS)
     zfile = StringIO(urllib2.urlopen(req).read())
     pfile = gzip.GzipFile(mode='rb', fileobj=zfile)
@@ -131,9 +131,19 @@ def fetch_single_letter_articles():
 
 def fetch_block_abstracts():
     """fetch the abstracts of all Unicode blocks"""
-    req = urllib2.Request('http://en.wikipedia.org/w/api.php' +
+    lang_to_cat = {
+        'en': 'Category:Unicode_blocks',
+        'de': 'Kategorie:Unicodeblock',
+        'fr': 'Cat%C3%A9gorie:Table_Unicode',
+    }
+
+    if LANG not in lang_to_cat:
+        # there is no overview category for LANG :(
+        return u""
+
+    req = urllib2.Request('https://'+LANG+'.wikipedia.org/w/api.php' +
             '?action=query&list=categorymembers' +
-            '&cmtitle=Category:Unicode_blocks' +
+            '&cmtitle=' + lang_to_cat[LANG] +
             '&format=json&cmlimit=500&cmprop=title&cmtype=page',
             headers=HEADERS)
     data = json.loads(urllib2.urlopen(req).read())
@@ -144,7 +154,11 @@ def fetch_block_abstracts():
         wp_title = article["title"]
         if wp_title == "Unicode block":
             continue
-        uc_title = wp_title.replace(' (Unicode block)', '')
+        uc_title = (
+            wp_title
+                .replace(' (Unicode block)', '')
+                .replace('Unicodeblock ', '')
+            )
 
         extract = fetch_extract(wp_title)
         if extract:
@@ -158,7 +172,7 @@ def fetch_block_abstracts():
 def fetch_extract(wikipedia_title):
     """fetch HTML extract of a Wikipedia article"""
     logger.debug("Download extract %s" % wikipedia_title)
-    req = urllib2.Request('http://en.wikipedia.org/w/api.php'+
+    req = urllib2.Request('https://'+LANG+'.wikipedia.org/w/api.php'+
             '?action=query&redirects&format=json&prop=extracts'+
             '&exintro&titles=%s' % urllib.quote(wikipedia_title.encode("UTF-8")),
             headers=HEADERS)
@@ -189,6 +203,10 @@ if __name__ == '__main__':
     logger.addHandler(_handler)
     logger.setLevel(logging.INFO)
 
+    if len(sys.argv) > 1:
+        LANG = sys.argv[1].lower()
+        CACHE_FILE += '.' + LANG
+        TARGET += '.' + LANG
     main()
 
 
