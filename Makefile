@@ -1,6 +1,6 @@
 
 SHELL := /bin/bash
-UNICODE_VERSION = 8.0.0
+UNICODE_VERSION = 9.0.0
 DB = db/ucd.sqlite
 UNIFONT = 1
 WIKIPEDIA = 1
@@ -65,7 +65,7 @@ clean:
 	-rm -f db/digraphs.sql
 	-rm -f db/namedsequences.sql
 	-rm -f db/images.sql
-	-rm -f db/wp.sql
+	-rm -f db/wp.sql*
 	-rm -f db/confusables.sql
 
 db/blocks.sql: data/unicode/Blocks.txt db/blocks.py

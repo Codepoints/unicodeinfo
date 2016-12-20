@@ -101,6 +101,7 @@ Radical  INTEGER(1),  -- bool
 Dep      INTEGER(1),  -- bool
 VS       INTEGER(1),  -- bool
 NChar    INTEGER(1),  -- bool
+PCM      INTEGER(1),  -- bool, new in U9
 kAccountingNumeric    TEXT(255),
 kAlternateHanYu       TEXT(2047),
 kAlternateJEF         TEXT(2047),
@@ -186,6 +187,7 @@ kRSKangXi             TEXT(6),
 kRSKorean             TEXT(6),
 kRSMerged             TEXT(2047),
 kRSUnicode            TEXT(255),
+kRSTUnicode           TEXT(255), -- new in U9
 kSBGY                 TEXT(255),
 kSemanticVariant      TEXT(255),
 kSimplifiedVariant    TEXT(255),
@@ -194,6 +196,7 @@ kTaiwanTelegraph      TEXT(4),
 kTang                 TEXT(255),
 kTotalStrokes         TEXT(3),
 kTraditionalVariant   TEXT(255),
+kTGT_MergedSrc        TEXT(255), -- new in U9
 kVietnamese           TEXT(255),
 kXHC1983              TEXT(255),
 kWubi                 TEXT(2047),
